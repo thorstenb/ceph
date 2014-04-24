@@ -1675,12 +1675,14 @@ void ECBackend::objects_read_async(
 
 int ECBackend::objects_get_attrs(
   const hobject_t &hoid,
-  map<string, bufferlist> *out)
+  map<string, bufferlist> *out,
+  bool user_only)
 {
   int r = store->getattrs(
     coll,
     ghobject_t(hoid, ghobject_t::NO_GEN, get_parent()->whoami_shard().shard),
-    *out);
+    *out,
+    user_only);
   if (r < 0)
     return r;
 

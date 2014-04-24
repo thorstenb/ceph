@@ -189,12 +189,13 @@ int PGBackend::objects_get_attr(
 
 int PGBackend::objects_get_attrs(
   const hobject_t &hoid,
-  map<string, bufferlist> *out)
+  map<string, bufferlist> *out,
+  bool user_only)
 {
   return store->getattrs(
     hoid.is_temp() ? temp_coll : coll,
     ghobject_t(hoid, ghobject_t::NO_GEN, get_parent()->whoami_shard().shard),
-    *out);
+    *out, user_only);
 }
 
 void PGBackend::rollback_setattrs(

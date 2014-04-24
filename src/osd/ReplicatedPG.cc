@@ -7084,7 +7084,7 @@ ObjectContextRef ReplicatedPG::get_object_context(const hobject_t& soid,
       } else {
 	int r = pgbackend->objects_get_attrs(
 	  soid,
-	  &obc->attr_cache);
+	  &obc->attr_cache, false);
 	assert(r == 0);
       }
     }
@@ -12015,18 +12015,9 @@ int ReplicatedPG::getattrs_maybe_cache(
     if (out)
       *out = obc->attr_cache;
   } else {
-    r = pgbackend->objects_get_attrs(obc->obs.oi.soid, out);
+    r = pgbackend->objects_get_attrs(obc->obs.oi.soid, out, user_only);
   }
-  if (out && user_only) {
-    map<string, bufferlist> tmp;
-    for (map<string, bufferlist>::iterator i = out->begin();
-	 i != out->end();
-	 ++i) {
-      if (i->first.size() > 1 && i->first[0] == '_')
-	tmp[i->first.substr(1, i->first.size())].claim(i->second);
-    }
-    tmp.swap(*out);
-  }
+
   return r;
 }
 

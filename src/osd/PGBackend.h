@@ -560,7 +560,8 @@
 
    virtual int objects_get_attrs(
      const hobject_t &hoid,
-     map<string, bufferlist> *out);
+     map<string, bufferlist> *out,
+     bool user_only);
 
    virtual int objects_read_sync(
      const hobject_t &hoid,

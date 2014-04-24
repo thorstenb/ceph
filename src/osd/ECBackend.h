@@ -457,7 +457,8 @@ public:
 
   int objects_get_attrs(
     const hobject_t &hoid,
-    map<string, bufferlist> *out);
+    map<string, bufferlist> *out,
+    bool user_only);
 
   void rollback_append(
     const hobject_t &hoid,
