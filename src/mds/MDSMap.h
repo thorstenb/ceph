@@ -216,6 +216,7 @@ public:
   void set_flag(int f) { flags |= f; }
   void clear_flag(int f) { flags &= ~f; }
 
+
   void set_snaps_allowed() {
     set_flag(CEPH_MDSMAP_ALLOW_SNAPS);
     ever_allowed_snaps = true;
@@ -226,6 +227,8 @@ public:
 
   epoch_t get_epoch() const { return epoch; }
   void inc_epoch() { epoch++; }
+
+  bool get_enabled() const { return enabled; }
 
   const utime_t& get_created() const { return created; }
   void set_created(utime_t ct) { modified = created = ct; }
