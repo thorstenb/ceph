@@ -2505,8 +2505,6 @@ int OSDMap::build_simple(CephContext *cct, epoch_t e, uuid_d &fsid,
     pgp_bits = pg_bits;
 
   vector<string> pool_names;
-  pool_names.push_back("data");
-  pool_names.push_back("metadata");
   pool_names.push_back("rbd");
 
   int poolbase = get_max_osd() ? get_max_osd() : 1;
@@ -2526,8 +2524,6 @@ int OSDMap::build_simple(CephContext *cct, epoch_t e, uuid_d &fsid,
     pools[pool].set_pg_num(poolbase << pg_bits);
     pools[pool].set_pgp_num(poolbase << pgp_bits);
     pools[pool].last_change = epoch;
-    if (*p == "data")
-      pools[pool].crash_replay_interval = cct->_conf->osd_default_data_pool_replay_window;
     pool_name[pool] = *p;
     name_pool[*p] = pool;
   }
