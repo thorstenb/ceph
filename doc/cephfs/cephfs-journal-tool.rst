@@ -8,7 +8,7 @@ Purpose
 If a CephFS journal has become damaged, expert intervention may be required
 to restore the filesystem to a working state.
 
-The ``cephfs-journal-tool`` utility provides functionality to aide experts in
+The ``cephfs-journal-tool`` utility provides functionality to aid experts in
 examining, modifying, and extracting data from journals.
 
 Syntax
@@ -50,7 +50,7 @@ Example: journal inspect
 
 * ``export`` writes out the journal to a sparse file.  This may not work
   reliably for journals with missing objects.
-* ``import`` loads the journal from a file written with ``import``
+* ``import`` loads the journal from a file written with ``export``
 
 
 Example: Journal import/export
