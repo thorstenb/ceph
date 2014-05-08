@@ -6592,9 +6592,17 @@ void Server::handle_slave_rename_prep(MDRequestRef& mdr)
   
   bufferlist blah;  // inode import data... obviously not used if we're the slave
   _rename_prepare(mdr, &le->commit, &blah, srcdn, destdn, straydn);
-  
-  mdlog->submit_entry(le, new C_MDS_SlaveRenamePrep(this, mdr, srcdn, destdn, straydn));
-  mdlog->flush();
+
+  if (le->commit.empty()) {
+    dout(10) << " empty metablob, skipping journal" << dendl;
+    mdlog->cancel_entry(le);
+    mdr->ls = NULL;
+    _logged_slave_rename(mdr, srcdn, destdn, straydn);
+  } else {
+    mdr->more()->slave_update_journaled = true;
+    mdlog->submit_entry(le, new C_MDS_SlaveRenamePrep(this, mdr, srcdn, destdn, straydn));
+    mdlog->flush();
+  }
 }
 
 void Server::_logged_slave_rename(MDRequestRef& mdr,
@@ -6678,12 +6686,6 @@ void Server::_commit_slave_rename(MDRequestRef& mdr, int r,
 
   list<Context*> finished;
   if (r == 0) {
-    // write a commit to the journal
-    ESlaveUpdate *le = new ESlaveUpdate(mdlog, "slave_rename_commit", mdr->reqid, 
-					mdr->slave_to_mds, ESlaveUpdate::OP_COMMIT, 
-					ESlaveUpdate::RENAME);
-    mdlog->start_entry(le);
-
     // unfreeze+singleauth inode
     //  hmm, do i really need to delay this?
     if (mdr->more()->is_inode_exporter) {
@@ -6725,8 +6727,16 @@ void Server::_commit_slave_rename(MDRequestRef& mdr, int r,
     mds->queue_waiters(finished);
     mdr->cleanup();
 
-    mdlog->submit_entry(le, new C_MDS_CommittedSlave(this, mdr));
-    mdlog->flush();
+    if (mdr->more()->slave_update_journaled) {
+      // write a commit to the journal
+      ESlaveUpdate *le = new ESlaveUpdate(mdlog, "slave_rename_commit", mdr->reqid,
+					  mdr->slave_to_mds, ESlaveUpdate::OP_COMMIT,
+					  ESlaveUpdate::RENAME);
+      mdlog->start_submit_entry(le, new C_MDS_CommittedSlave(this, mdr));
+      mdlog->flush();
+    } else {
+      _committed_slave(mdr);
+    }
   } else {
 
     // abort
@@ -7019,9 +7029,19 @@ void Server::do_rename_rollback(bufferlist &rbl, int master, MDRequestRef& mdr,
     mdcache->project_subtree_rename(in, destdir, srcdir);
   }
 
-  mdlog->submit_entry(le, new C_MDS_LoggedRenameRollback(this, mut, mdr, srcdn, srcdnpv,
-							 destdn, straydn, finish_mdr));
-  mdlog->flush();
+  if (mdr && !mdr->more()->slave_update_journaled) {
+    assert(le->commit.empty());
+    mdlog->cancel_entry(le);
+    mut->ls = NULL;
+    _rename_rollback_finish(mut, mdr, srcdn, srcdnpv, destdn, straydn, finish_mdr);
+  } else {
+    assert(!le->commit.empty());
+    if (mdr)
+      mdr->more()->slave_update_journaled = false;
+    mdlog->submit_entry(le, new C_MDS_LoggedRenameRollback(this, mut, mdr, srcdn, srcdnpv,
+		       destdn, straydn, finish_mdr));
+    mdlog->flush();
+  }
 }
 
 void Server::_rename_rollback_finish(MutationRef& mut, MDRequestRef& mdr, CDentry *srcdn,
