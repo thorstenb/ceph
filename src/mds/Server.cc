@@ -4837,14 +4837,7 @@ void Server::handle_client_unlink(MDRequestRef& mdr)
   if (in->is_dir() && in->has_subtree_root_dirfrag()) {
     // subtree root auths need to be witnesses
     set<int> witnesses;
-    list<CDir*> ls;
-    in->get_subtree_dirfrags(ls);
-    for (list<CDir*>::iterator p = ls.begin(); p != ls.end(); ++p) {
-      CDir *dir = *p;
-      int auth = dir->authority().first;
-      witnesses.insert(auth);
-      dout(10) << " need mds." << auth << " to witness for dirfrag " << *dir << dendl;      
-    } 
+    in->list_replicas(witnesses);
     dout(10) << " witnesses " << witnesses << ", have " << mdr->more()->witnessed << dendl;
 
     for (set<int>::iterator p = witnesses.begin();
@@ -5094,6 +5087,35 @@ void Server::handle_slave_rmdir_prep(MDRequestRef& mdr)
   ::encode(rollback, mdr->more()->rollback_bl);
   dout(20) << " rollback is " << mdr->more()->rollback_bl.length() << " bytes" << dendl;
 
+  // set up commit waiter
+  mdr->more()->slave_commit = new C_MDS_SlaveRmdirCommit(this, mdr);
+
+  if (!in->has_subtree_root_dirfrag(mds->get_nodeid())) {
+    dout(10) << " no auth subtree in " << *in << ", skipping journal" << dendl;
+    dn->get_dir()->unlink_inode(dn);
+    straydn->get_dir()->link_primary_inode(straydn, in);
+
+    assert(straydn->first >= in->first);
+    in->first = straydn->first;
+
+    mdcache->adjust_subtree_after_rename(in, dn->get_dir(), false);
+
+    MMDSSlaveRequest *reply = new MMDSSlaveRequest(mdr->reqid, mdr->attempt,
+						   MMDSSlaveRequest::OP_RMDIRPREPACK);
+    mds->send_message_mds(reply, mdr->slave_to_mds);
+
+    // send caps to auth (if we're not already)
+    if (in->is_any_caps() && !in->state_test(CInode::STATE_EXPORTINGCAPS))
+      mdcache->migrator->export_caps(in);
+
+    mdcache->touch_dentry_bottom(straydn); // move stray to end of lru
+
+    mdr->slave_request->put();
+    mdr->slave_request = 0;
+    mdr->straydn = 0;
+    return;
+  }
+
   straydn->push_projected_linkage(in);
   dn->push_projected_linkage();
 
@@ -5111,9 +5133,7 @@ void Server::handle_slave_rmdir_prep(MDRequestRef& mdr)
 
   mds->mdcache->project_subtree_rename(in, dn->get_dir(), straydn->get_dir());
 
-  // set up commit waiter
-  mdr->more()->slave_commit = new C_MDS_SlaveRmdirCommit(this, mdr);
-
+  mdr->more()->slave_update_journaled = true;
   mdlog->submit_entry(le, new C_MDS_SlaveRmdirPrep(this, mdr, dn, straydn));
   mdlog->flush();
 }
@@ -5170,14 +5190,18 @@ void Server::_commit_slave_rmdir(MDRequestRef& mdr, int r)
   dout(10) << "_commit_slave_rmdir " << *mdr << " r=" << r << dendl;
   
   if (r == 0) {
-    // write a commit to the journal
-    ESlaveUpdate *le = new ESlaveUpdate(mdlog, "slave_rmdir_commit", mdr->reqid, mdr->slave_to_mds,
-					ESlaveUpdate::OP_COMMIT, ESlaveUpdate::RMDIR);
-    mdlog->start_entry(le);
     mdr->cleanup();
 
-    mdlog->submit_entry(le, new C_MDS_CommittedSlave(this, mdr));
-    mdlog->flush();
+    if (mdr->more()->slave_update_journaled) {
+      // write a commit to the journal
+      ESlaveUpdate *le = new ESlaveUpdate(mdlog, "slave_rmdir_commit", mdr->reqid,
+					  mdr->slave_to_mds, ESlaveUpdate::OP_COMMIT,
+					  ESlaveUpdate::RMDIR);
+      mdlog->start_submit_entry(le, new C_MDS_CommittedSlave(this, mdr));
+      mdlog->flush();
+    } else {
+      _committed_slave(mdr);
+    }
   } else {
     // abort
     do_rmdir_rollback(mdr->more()->rollback_bl, mdr->slave_to_mds, mdr);
@@ -5225,6 +5249,19 @@ void Server::do_rmdir_rollback(bufferlist &rbl, int master, MDRequestRef& mdr)
   assert(straydn);
   dout(10) << " straydn " << *dn << dendl;
   CInode *in = straydn->get_linkage()->get_inode();
+
+  if (mdr && !mdr->more()->slave_update_journaled) {
+    assert(!in->has_subtree_root_dirfrag(mds->get_nodeid()));
+
+    straydn->get_dir()->unlink_inode(straydn);
+    dn->get_dir()->link_primary_inode(dn, in);
+
+    mdcache->adjust_subtree_after_rename(in, straydn->get_dir(), false);
+
+    mds->mdcache->request_finish(mdr);
+    mds->mdcache->finish_rollback(rollback.reqid);
+    return;
+  }
 
   dn->push_projected_linkage(in);
   straydn->push_projected_linkage();
