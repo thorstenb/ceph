@@ -38,23 +38,30 @@ int HashIndex::cleanup() {
   r = get_info(in_progress.path, &info);
   if (r < 0)
     return r;
+
   if (in_progress.is_split())
-    return complete_split(in_progress.path, info);
+    r = complete_split(in_progress.path, info);
   else if (in_progress.is_merge())
-    return complete_merge(in_progress.path, info);
+    r = complete_merge(in_progress.path, info);
   else if (in_progress.is_col_split()) {
     for (vector<string>::iterator i = in_progress.path.begin();
 	 i != in_progress.path.end();
 	 ++i) {
       vector<string> path(in_progress.path.begin(), i);
-      int r = reset_attr(path);
+      r = reset_attr(path);
       if (r < 0)
-	return r;
+	goto out;
     }
-    return 0;
+    r = 0;
+  } else {
+    dout(10) << __func__ << ": invalid op code" << dendl;
+    r = -EINVAL;
   }
-  else
-    return -EINVAL;
+
+out:
+  if (r != 0)
+    dout(10) << __func__ << ": return " << r << dendl;
+  return r;
 }
 
 int HashIndex::reset_attr(
