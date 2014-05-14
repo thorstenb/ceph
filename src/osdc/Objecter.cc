@@ -1624,7 +1624,7 @@ int Objecter::op_cancel(ceph_tid_t tid, int r)
 {
   int ret = 0;
 
-  rwlock.get_read();
+  rwlock.get_write();
 
 start:
 
