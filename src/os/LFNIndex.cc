@@ -101,6 +101,7 @@ int LFNIndex::unlink(const ghobject_t &oid)
   }
   r = _remove(path, oid, short_name);
   if (r < 0) {
+    dout(10) << __func__ << ": r is " << r << dendl;
     goto out;
   }
   );
