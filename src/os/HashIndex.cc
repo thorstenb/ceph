@@ -36,8 +36,10 @@ int HashIndex::cleanup() {
   InProgressOp in_progress(i);
   subdir_info_s info;
   r = get_info(in_progress.path, &info);
-  if (r < 0)
+  if (r < 0) {
+    dout(10) << __func__ << ": get_info return " << r << dendl;
     return r;
+  }
 
   if (in_progress.is_split())
     r = complete_split(in_progress.path, info);
