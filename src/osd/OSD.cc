@@ -2316,7 +2316,6 @@ void OSD::build_past_intervals_parallel()
 	p.same_interval_since,
 	pg->info.history.last_epoch_clean,
 	cur_map, last_map,
-	pg->info.pgid.pool(),
 	pg->info.pgid.pgid,
 	&pg->past_intervals,
 	&debug);
@@ -7856,6 +7855,13 @@ void OSD::handle_op(OpRequestRef op, OSDMapRef osdmap)
 		      << " features " << m->get_connection()->get_features()
 		      << "\n";
     service.reply_op_error(op, -ENXIO);
+    return;
+  }
+
+  // check against current map too
+  if (!osdmap->have_pg_pool(pgid.pool()) ||
+      osdmap->get_pg_acting_role(pgid.pgid, whoami) < 0) {
+    dout(7) << "dropping; no longer have PG (or pool); client will retarget" << dendl;
     return;
   }
 

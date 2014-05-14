@@ -6170,6 +6170,7 @@ int ReplicatedPG::start_flush(
 
   // construct a SnapContext appropriate for this clone/head
   SnapContext dsnapc;
+  dsnapc.seq = 0;
   SnapContext snapc;
   if (soid.snap == CEPH_NOSNAP) {
     snapc.seq = snapset.seq;
@@ -6212,7 +6213,7 @@ int ReplicatedPG::start_flush(
   object_locator_t base_oloc(soid);
   base_oloc.pool = pool.info.tier_of;
 
-  if (!dsnapc.snaps.empty()) {
+  if (dsnapc.seq > 0) {
     ObjectOperation o;
     o.remove();
     osd->objecter_lock.Lock();
