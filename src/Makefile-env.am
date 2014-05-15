@@ -82,6 +82,14 @@ AM_CXXFLAGS = \
 if !CLANG
 	AM_CXXFLAGS += -Wstrict-null-sentinel
 endif
+if CLANG
+	AM_CXXFLAGS += -Weverything -Wno-padded -Wno-c++11-long-long -Wno-variadic-macros \
+				   -Wno-c++11-extensions -Wno-global-constructors -Wno-exit-time-destructors \
+				   -Wno-sign-conversion -Wno-weak-vtables -Wno-disabled-macro-expansion \
+				   -Wno-c99-extensions -Wno-shadow -Wno-documentation-unknown-command -Wno-undef \
+				   -Wno-documentation -Wno-duplicate-enum -Wno-switch-enum -Wno-unused-parameter \
+				   -Wno-packed
+endif
 
 # note: this is position dependant, it affects the -l options that
 # come after it on the command line. when you use ${AM_LDFLAGS} in
