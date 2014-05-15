@@ -238,7 +238,7 @@ int main(int argc, const char **argv)
       yes_really = true;
     } else if (ceph_argparse_witharg(args, i, &val, "--osdmap", (char*)NULL)) {
       osdmapfn = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--inject_monmap", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--inject-monmap", (char*)NULL)) {
       inject_monmap = val;
     } else if (ceph_argparse_witharg(args, i, &val, "--extract-monmap", (char*)NULL)) {
       extract_monmap = val;

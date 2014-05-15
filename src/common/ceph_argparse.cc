@@ -443,7 +443,7 @@ CephInitParameters ceph_argparse_early_args
 	_exit(1);
       }
     }
-    else if (ceph_argparse_flag(args, i, "--show_args")) {
+    else if (ceph_argparse_flag(args, i, "--show-args")) {
       cout << "args: ";
       for (std::vector<const char *>::iterator ci = orig_args.begin(); ci != orig_args.end(); ++ci) {
         if (ci != orig_args.begin())

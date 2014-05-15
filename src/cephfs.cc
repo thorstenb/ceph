@@ -214,7 +214,7 @@ int init_options(int argc, char **argv, int *fd, char **path, int *cmd,
       return 1;
     }
 
-    if (!strcmp(argv[i], "--stripe_unit") || argv[i][1] == 'u') {
+    if (!strcmp(argv[i], "--stripe-unit") || argv[i][1] == 'u') {
       if (*cmd != CMD_SET_LAYOUT) {
         cerr << "Invalid option for command!" << endl;
         return 1;
@@ -224,7 +224,7 @@ int init_options(int argc, char **argv, int *fd, char **path, int *cmd,
         cerr << "invalid value for stripe unit" << endl;
         return 1;
       }
-    } else if (!strcmp(argv[i], "--stripe_count") || argv[i][1] == 'c') {
+    } else if (!strcmp(argv[i], "--stripe-count") || argv[i][1] == 'c') {
       if (*cmd != CMD_SET_LAYOUT) {
         cerr << "Invalid option for command!" << endl;
         return 1;
@@ -234,7 +234,7 @@ int init_options(int argc, char **argv, int *fd, char **path, int *cmd,
         cerr << "invalid value for stripe count" << endl;
         return 1;
       }
-    } else if (!strcmp(argv[i], "--object_size") || argv[i][1] == 's') {
+    } else if (!strcmp(argv[i], "--object-size") || argv[i][1] == 's') {
       if (*cmd != CMD_SET_LAYOUT) {
         cerr << "Invalid option for command!" << endl;
         return 1;

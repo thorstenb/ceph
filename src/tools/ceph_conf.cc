@@ -164,22 +164,22 @@ int main(int argc, const char **argv)
       break;
     } else if (ceph_argparse_witharg(args, i, &val, "-s", "--section", (char*)NULL)) {
       sections.push_back(val);
-    } else if (ceph_argparse_flag(args, i, "-r", "--resolve_search")) {
+    } else if (ceph_argparse_flag(args, i, "-r", "--resolve-search")) {
       resolve_search = true;
     } else if (ceph_argparse_flag(args, i, "-h", "--help")) {
       action = "help";
     } else if (ceph_argparse_witharg(args, i, &val, "--lookup", (char*)NULL)) {
       action = "lookup";
       lookup_key = val;
-    } else if (ceph_argparse_flag(args, i, "-L", "--list_all_sections")) {
+    } else if (ceph_argparse_flag(args, i, "-L", "--list-all-sections")) {
       action = "list-sections";
       section_list_prefix = "";
-    } else if (ceph_argparse_witharg(args, i, &val, "-l", "--list_sections", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "-l", "--list-sections", (char*)NULL)) {
       action = "list-sections";
       section_list_prefix = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--filter_key", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--filter-key", (char*)NULL)) {
       filter_key.push_back(val);
-    } else if (ceph_argparse_witharg(args, i, &val, "--filter_key_value", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--filter-key-value", (char*)NULL)) {
       size_t pos = val.find_first_of('=');
       if (pos == string::npos) {
 	cerr << "expecting argument like 'key=value' for --filter-key-value (not '" << val << "')" << std::endl;

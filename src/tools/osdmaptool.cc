@@ -102,28 +102,28 @@ int main(int argc, const char **argv)
       test_random = true;
     } else if (ceph_argparse_flag(args, i, "--clobber")) {
       clobber = true;
-    } else if (ceph_argparse_withint(args, i, &pg_bits, &err, "--pg_bits", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &pg_bits, &err, "--pg-bits", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
-    } else if (ceph_argparse_withint(args, i, &pgp_bits, &err, "--pgp_bits", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &pgp_bits, &err, "--pgp-bits", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
-    } else if (ceph_argparse_witharg(args, i, &val, "--export_crush", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--export-crush", (char*)NULL)) {
       export_crush = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--import_crush", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--import-crush", (char*)NULL)) {
       import_crush = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--test_map_pg", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--test-map-pg", (char*)NULL)) {
       test_map_pg = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--test_map_object", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--test-map-object", (char*)NULL)) {
       test_map_object = val;
-    } else if (ceph_argparse_flag(args, i, "--test_crush")) {
+    } else if (ceph_argparse_flag(args, i, "--test-crush")) {
       test_crush = true;
-    } else if (ceph_argparse_withint(args, i, &range_first, &err, "--range_first", (char*)NULL)) {
-    } else if (ceph_argparse_withint(args, i, &range_last, &err, "--range_last", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &range_first, &err, "--range-first", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &range_last, &err, "--range-last", (char*)NULL)) {
     } else if (ceph_argparse_withint(args, i, &pool, &err, "--pool", (char*)NULL)) {
       if (!err.str().empty()) {
         cerr << err.str() << std::endl;

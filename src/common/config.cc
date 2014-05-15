@@ -376,14 +376,14 @@ int md_config_t::parse_argv(std::vector<const char*>& args)
        * argument parses will still need to see it. */
       break;
     }
-    else if (ceph_argparse_flag(args, i, "--show_conf")) {
+    else if (ceph_argparse_flag(args, i, "--show-conf")) {
       cerr << cf << std::endl;
       _exit(0);
     }
-    else if (ceph_argparse_flag(args, i, "--show_config")) {
+    else if (ceph_argparse_flag(args, i, "--show-config")) {
       show_config = true;
     }
-    else if (ceph_argparse_witharg(args, i, &val, "--show_config_value", (char*)NULL)) {
+    else if (ceph_argparse_witharg(args, i, &val, "--show-config-value", (char*)NULL)) {
       show_config_value = true;
       show_config_value_arg = val;
     }
@@ -405,7 +405,7 @@ int md_config_t::parse_argv(std::vector<const char*>& args)
     else if (ceph_argparse_witharg(args, i, &val, "--monmap", "-M", (char*)NULL)) {
       set_val_or_die("monmap", val.c_str());
     }
-    else if (ceph_argparse_witharg(args, i, &val, "--mon_host", "-m", (char*)NULL)) {
+    else if (ceph_argparse_witharg(args, i, &val, "--mon-host", "-m", (char*)NULL)) {
       set_val_or_die("mon_host", val.c_str());
     }
     else if (ceph_argparse_witharg(args, i, &val, "--bind", (char*)NULL)) {
@@ -417,7 +417,7 @@ int md_config_t::parse_argv(std::vector<const char*>& args)
     else if (ceph_argparse_witharg(args, i, &val, "--keyring", "-k", (char*)NULL)) {
       set_val_or_die("keyring", val.c_str());
     }
-    else if (ceph_argparse_witharg(args, i, &val, "--client_mountpoint", "-r", (char*)NULL)) {
+    else if (ceph_argparse_witharg(args, i, &val, "--client-mountpoint", "-r", (char*)NULL)) {
       set_val_or_die("client_mountpoint", val.c_str());
     }
     else {

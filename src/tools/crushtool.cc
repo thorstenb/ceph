@@ -224,19 +224,19 @@ int main(int argc, const char **argv)
       outfn = val;
     } else if (ceph_argparse_flag(args, i, "-v", "--verbose")) {
       verbose += 1;
-    } else if (ceph_argparse_flag(args, i, "--show_utilization")) {
+    } else if (ceph_argparse_flag(args, i, "--show-utilization")) {
       display = true;
       tester.set_output_utilization(true);
-    } else if (ceph_argparse_flag(args, i, "--show_utilization_all")) {
+    } else if (ceph_argparse_flag(args, i, "--show-utilization-all")) {
       display = true;
       tester.set_output_utilization_all(true);
-    } else if (ceph_argparse_flag(args, i, "--show_statistics")) {
+    } else if (ceph_argparse_flag(args, i, "--show-statistics")) {
       display = true;
       tester.set_output_statistics(true);
-    } else if (ceph_argparse_flag(args, i, "--show_bad_mappings")) {
+    } else if (ceph_argparse_flag(args, i, "--show-bad-mappings")) {
       display = true;
       tester.set_output_bad_mappings(true);
-    } else if (ceph_argparse_flag(args, i, "--show_choose_tries")) {
+    } else if (ceph_argparse_flag(args, i, "--show-choose-tries")) {
       display = true;
       tester.set_output_choose_tries(true);
     } else if (ceph_argparse_witharg(args, i, &val, "-c", "--compile", (char*)NULL)) {
@@ -249,23 +249,23 @@ int main(int argc, const char **argv)
     } else if (ceph_argparse_flag(args, i, "--enable-unsafe-tunables")) {
       unsafe_tunables = true;
     } else if (ceph_argparse_withint(args, i, &choose_local_tries, &err,
-				     "--set_choose_local_tries", (char*)NULL)) {
+				     "--set-choose-local-tries", (char*)NULL)) {
       adjust = true;
     } else if (ceph_argparse_withint(args, i, &choose_local_fallback_tries, &err,
-				     "--set_choose_local_fallback_tries", (char*)NULL)) {
+				     "--set-choose-local-fallback-tries", (char*)NULL)) {
       adjust = true;
     } else if (ceph_argparse_withint(args, i, &choose_total_tries, &err,
-				     "--set_choose_total_tries", (char*)NULL)) {
+				     "--set-choose-total-tries", (char*)NULL)) {
       adjust = true;
     } else if (ceph_argparse_withint(args, i, &chooseleaf_descend_once, &err,
-				     "--set_chooseleaf_descend_once", (char*)NULL)) {
+				     "--set-chooseleaf-descend-once", (char*)NULL)) {
       adjust = true;
     } else if (ceph_argparse_withint(args, i, &chooseleaf_vary_r, &err,
-				     "--set_chooseleaf_vary_r", (char*)NULL)) {
+				     "--set-chooseleaf-vary-r", (char*)NULL)) {
       adjust = true;
     } else if (ceph_argparse_flag(args, i, "--reweight")) {
       reweight = true;
-    } else if (ceph_argparse_withint(args, i, &add_item, &err, "--add_item", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &add_item, &err, "--add-item", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
@@ -282,7 +282,7 @@ int main(int argc, const char **argv)
       }
       add_name.assign(*i);
       i = args.erase(i);
-    } else if (ceph_argparse_withint(args, i, &add_item, &err, "--update_item", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &add_item, &err, "--update-item", (char*)NULL)) {
       update_item = true;
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
@@ -325,9 +325,9 @@ int main(int argc, const char **argv)
       else {
         tester.set_output_data_file_name(name + "-");
       }
-    } else if (ceph_argparse_witharg(args, i, &val, "--remove_item", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--remove-item", (char*)NULL)) {
       remove_name = val;
-    } else if (ceph_argparse_witharg(args, i, &val, "--reweight_item", (char*)NULL)) {
+    } else if (ceph_argparse_witharg(args, i, &val, "--reweight-item", (char*)NULL)) {
       reweight_name = val;
       if (i == args.end()) {
 	cerr << "expecting additional argument to --reweight-item" << std::endl;
@@ -337,24 +337,24 @@ int main(int argc, const char **argv)
       i = args.erase(i);
     } else if (ceph_argparse_flag(args, i, "--build")) {
       build = true;
-    } else if (ceph_argparse_withint(args, i, &num_osds, &err, "--num_osds", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &num_osds, &err, "--num-osds", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
-    } else if (ceph_argparse_withint(args, i, &x, &err, "--num_rep", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &x, &err, "--num-rep", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
       tester.set_num_rep(x);
-    } else if (ceph_argparse_withint(args, i, &x, &err, "--max_x", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &x, &err, "--max-x", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
       tester.set_max_x(x);
-    } else if (ceph_argparse_withint(args, i, &x, &err, "--min_x", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &x, &err, "--min-x", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
@@ -366,13 +366,13 @@ int main(int argc, const char **argv)
 	exit(EXIT_FAILURE);
       }
       tester.set_x(x);
-    } else if (ceph_argparse_withint(args, i, &x, &err, "--max_rule", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &x, &err, "--max-rule", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);
       }
       tester.set_max_rule(x);
-    } else if (ceph_argparse_withint(args, i, &x, &err, "--min_rule", (char*)NULL)) {
+    } else if (ceph_argparse_withint(args, i, &x, &err, "--min-rule", (char*)NULL)) {
       if (!err.str().empty()) {
 	cerr << err.str() << std::endl;
 	exit(EXIT_FAILURE);

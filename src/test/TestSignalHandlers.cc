@@ -79,9 +79,9 @@ int main(int argc, const char **argv)
       break;
     } else if (ceph_argparse_flag(args, i, "-h", "--help", (char*)NULL)) {
       usage();
-    } else if (ceph_argparse_flag(args, i, "--infinite_recursion", (char*)NULL)) {
+    } else if (ceph_argparse_flag(args, i, "--infinite-recursion", (char*)NULL)) {
       fn = infinite_recursion_test;
-    } else if (ceph_argparse_flag(args, i, "-s", "--simple_segv", (char*)NULL)) {
+    } else if (ceph_argparse_flag(args, i, "-s", "--simple-segv", (char*)NULL)) {
       fn = simple_segv_test;
     } else {
       cerr << "Garbage at end of command line." << std::endl;
