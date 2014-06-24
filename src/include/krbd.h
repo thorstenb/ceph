@@ -18,9 +18,9 @@ extern "C" {
 #endif
 
 struct krbd_ctx;
-struct CephContext;
+class CephContext;
 
-int krbd_create_from_context(struct CephContext *cct, struct krbd_ctx **pctx);
+int krbd_create_from_context(class CephContext *cct, struct krbd_ctx **pctx);
 void krbd_destroy(struct krbd_ctx *ctx);
 
 int krbd_map(struct krbd_ctx *ctx, const char *pool, const char *image,

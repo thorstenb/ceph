@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	ret = rados_create(&cluster, NULL);
 
 	/* libcephfs.h */
-	struct ceph_mount_info *cmount;
+	class ceph_mount_info *cmount;
 	ret = ceph_create(&cmount, NULL);
 
 	return 0;

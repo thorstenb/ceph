@@ -12,7 +12,7 @@
 
 int main(int argc, const char **argv)
 {
-        struct ceph_mount_info *cmount;
+        class ceph_mount_info *cmount;
         int ret, fd, len;
         char buf[1024];
 

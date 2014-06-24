@@ -573,7 +573,7 @@ int dump_images(struct krbd_ctx *ctx, Formatter *f)
   return r;
 }
 
-extern "C" int krbd_create_from_context(struct CephContext *cct,
+extern "C" int krbd_create_from_context(class CephContext *cct,
                                         struct krbd_ctx **pctx)
 {
   struct krbd_ctx *ctx = new struct krbd_ctx();

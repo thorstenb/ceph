@@ -43,10 +43,10 @@ namespace Hypertable {
    */
   class OpenFileDataCeph : public OpenFileData {
   public:
-    OpenFileDataCeph(struct ceph_mount_info *cmount_, const String& fname,
+    OpenFileDataCeph(class ceph_mount_info *cmount_, const String& fname,
 		     int _fd, int _flags);
     virtual ~OpenFileDataCeph();
-    struct ceph_mount_info *cmount;
+    class ceph_mount_info *cmount;
     int fd;
     int flags;
     String filename;
@@ -96,7 +96,7 @@ namespace Hypertable {
                        StaticBuffer &serialized_parameters);
 
   private:
-    struct ceph_mount_info *cmount;
+    class ceph_mount_info *cmount;
     static atomic_t ms_next_fd;
 
     virtual void report_error(ResponseCallback *cb, int error);
